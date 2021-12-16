@@ -40,6 +40,27 @@ type BMC struct {
 	Interface string `json:"interface,omitempty"`
 }
 
+// AMT defines data about how to talk to the node via the AMT api.
+type AMT struct {
+	// AMT endpoint.
+	Endpoint string `json:"endpoint"`
+	// AMT port. Defaults to 16992.
+	// +optional
+	Port uint32 `json:"port,omitempty"`
+	// AMT user value.
+	// +optional
+	User string `json:"user,omitempty"`
+	// Source for the user value. Cannot be used if User is not empty.
+	// +optional
+	UserFrom *CredentialSource `json:"userFrom,omitempty"`
+	// AMT password value.
+	// +optional
+	Pass string `json:"pass,omitempty"`
+	// Source for the password value. Cannot be used if Pass is not empty.
+	// +optional
+	PassFrom *CredentialSource `json:"passFrom,omitempty"`
+}
+
 // CredentialSource defines a reference to the credential value.
 type CredentialSource struct {
 	SecretKeyRef *SecretKeyRef `json:"secretKeyRef,omitempty"`
@@ -150,6 +171,7 @@ type ServerSpec struct {
 	SystemInformation *SystemInformation      `json:"system,omitempty"`
 	CPU               *CPUInformation         `json:"cpu,omitempty"`
 	BMC               *BMC                    `json:"bmc,omitempty"`
+	AMT               *AMT                    `json:"amt,omitempty"`
 	ManagementAPI     *ManagementAPI          `json:"managementApi,omitempty"`
 	ConfigPatches     []ConfigPatches         `json:"configPatches,omitempty"`
 	Accepted          bool                    `json:"accepted"`

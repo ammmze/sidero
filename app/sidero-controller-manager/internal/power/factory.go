@@ -11,6 +11,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
 	"github.com/talos-systems/sidero/app/sidero-controller-manager/api/v1alpha1"
+	"github.com/talos-systems/sidero/app/sidero-controller-manager/internal/power/amt"
 	"github.com/talos-systems/sidero/app/sidero-controller-manager/internal/power/api"
 	"github.com/talos-systems/sidero/app/sidero-controller-manager/internal/power/ipmi"
 	"github.com/talos-systems/sidero/app/sidero-controller-manager/internal/power/metal"
@@ -53,6 +54,35 @@ func NewManagementClient(ctx context.Context, client client.Client, spec *v1alph
 		}
 
 		return ipmi.NewClient(bmcSpec)
+	case spec.AMT != nil:
+		var err error
+
+		amtSpec := *spec.AMT
+
+		if amtSpec.User == "" {
+			amtSpec.User, err = amtSpec.UserFrom.Resolve(ctx, client)
+			if err != nil {
+				return nil, err
+			}
+		}
+
+		if amtSpec.Pass == "" {
+			amtSpec.Pass, err = amtSpec.PassFrom.Resolve(ctx, client)
+			if err != nil {
+				return nil, err
+			}
+		}
+
+		if amtSpec.User == "" || amtSpec.Pass == "" {
+			// no username and password, BMC information is not fully populated yet
+			return fakeClient{}, nil
+		}
+
+		if amtSpec.Port == 0 {
+			amtSpec.Port = constants.DefaultAMTPort
+		}
+
+		return amt.NewClient(amtSpec)
 	case spec.ManagementAPI != nil:
 		return api.NewClient(*spec.ManagementAPI)
 	default:

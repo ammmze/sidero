@@ -72,6 +72,74 @@ spec:
             properties:
               accepted:
                 type: boolean
+              amt:
+                description: AMT defines data about how to talk to the node via the
+                  AMT api.
+                properties:
+                  endpoint:
+                    description: AMT endpoint.
+                    type: string
+                  pass:
+                    description: AMT password value.
+                    type: string
+                  passFrom:
+                    description: Source for the password value. Cannot be used if
+                      Pass is not empty.
+                    properties:
+                      secretKeyRef:
+                        description: SecretKeyRef defines a ref to a given key within
+                          a secret.
+                        properties:
+                          key:
+                            description: Key to select
+                            type: string
+                          name:
+                            type: string
+                          namespace:
+                            description: 'Namespace and name of credential secret
+                              nb: can''t use namespacedname here b/c it doesn''t have
+                              json tags in the struct :('
+                            type: string
+                        required:
+                        - key
+                        - name
+                        - namespace
+                        type: object
+                    type: object
+                  port:
+                    description: AMT port. Defaults to 16992.
+                    format: int32
+                    type: integer
+                  user:
+                    description: AMT user value.
+                    type: string
+                  userFrom:
+                    description: Source for the user value. Cannot be used if User
+                      is not empty.
+                    properties:
+                      secretKeyRef:
+                        description: SecretKeyRef defines a ref to a given key within
+                          a secret.
+                        properties:
+                          key:
+                            description: Key to select
+                            type: string
+                          name:
+                            type: string
+                          namespace:
+                            description: 'Namespace and name of credential secret
+                              nb: can''t use namespacedname here b/c it doesn''t have
+                              json tags in the struct :('
+                            type: string
+                        required:
+                        - key
+                        - name
+                        - namespace
+                        type: object
+                    type: object
+                required:
+                - endpoint
+                type: object
               bmc:
                 description: BMC defines data about how to talk to the node via ipmitool.
                 properties:

@@ -19,6 +19,7 @@ const (
 	DefaultServerRebootTimeout = time.Minute * 20
 
 	DefaultBMCPort = uint32(623)
+	DefaultAMTPort = uint32(16992)
 
 	SideroLinkInternalAPIEndpoint = "localhost:4000"
 )
